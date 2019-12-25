@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+    rtsp_server_live555:
+        image: rtsp_server_live555:latest
+    rtsp_discovery:
+        container_name: nmap_rtsp_discovery
+        build:
+            context: .
+            dockerfile: Dockerfile
+        volumes:
+            - ./data:/data
+        environment:
+            HOSTNAME: ${HOSTNAME}
+        command: /usr/bin/nmap --script rtsp-url-brute --script-args rtsp-url-brute.urlfile=/data/rtsp-urls.txt -d -p 554 ${HOSTNAME}
+        depends_on: 
+            - rtsp_server_live555
+        links: 
+            - rtsp_server_live555
